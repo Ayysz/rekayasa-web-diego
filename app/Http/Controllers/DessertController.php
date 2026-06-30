@@ -73,7 +73,7 @@ class DessertController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,avif|max:2048',
             'nama_dessert' => 'required|string|max:255',
             'komposisi' => 'required|string',
             'harga' => 'required|numeric',
