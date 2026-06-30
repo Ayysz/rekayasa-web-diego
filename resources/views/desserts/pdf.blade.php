@@ -63,7 +63,7 @@
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td class="text-center">
                         @if (filter_var($dessert->gambar, FILTER_VALIDATE_URL))
-                            <img src="{{ $dessert->gambar }}" alt="Gambar" width="50" height="50" style="object-fit: cover; border-radius: 4px;">
+                            <img src="{{ str_replace('.webp', '.png', $dessert->gambar) }}" alt="Gambar" width="50" height="50" style="object-fit: cover; border-radius: 4px;">
                         @else
                             <span style="color: #999;">-</span>
                         @endif
