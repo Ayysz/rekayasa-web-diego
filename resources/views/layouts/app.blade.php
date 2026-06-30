@@ -22,7 +22,7 @@
                         <h1 class="text-xl font-bold">Admin Panel</h1>
                     </div>
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="{{ route('desserts.index') }}" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{{ route('desserts.index') }}" class="border-pink-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Dessert
                         </a>
                     </div>

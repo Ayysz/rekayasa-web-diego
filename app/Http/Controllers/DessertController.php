@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dessert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DessertController extends Controller
 {
@@ -11,6 +12,21 @@ class DessertController extends Controller
     {
         $desserts = Dessert::all();
         return view('desserts.index', compact('desserts'));
+    }
+
+    public function exportPdf()
+    {
+        $desserts = Dessert::all();
+        
+        if ($desserts->isEmpty()) {
+            return redirect()->route('admin.desserts.index')->with('error', 'Tidak ada data untuk diexport.');
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::setOptions(['isRemoteEnabled' => true])
+            ->loadView('desserts.pdf', compact('desserts'));
+        $pdf->setPaper('A4', 'landscape');
+        
+        return $pdf->download('Data_Master_Dessert.pdf');
     }
 
     public function create()
@@ -21,7 +37,7 @@ class DessertController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'gambar' => 'required',
+            'gambar' => 'required|image|mimes:jpeg,png,jpg,gif,webp,avif|max:2048',
             'nama_dessert' => 'required|string|max:255',
             'komposisi' => 'required|string',
             'harga' => 'required|numeric',
@@ -32,11 +48,20 @@ class DessertController extends Controller
             'harga.required' => 'Harga tidak boleh kosong.',
             'kategori.required' => 'Kategori tidak boleh kosong.',
             'gambar.required' => 'Gambar tidak boleh kosong.',
+            'gambar.image' => 'File harus berupa gambar.',
         ]);
 
-        Dessert::create($request->all());
+        $data = $request->except('gambar');
 
-        return redirect()->route('desserts.index')->with('success', 'Data Dessert berhasil ditambahkan.');
+        // Cloudinary upload via Storage
+        if ($request->hasFile('gambar')) {
+            $path = $request->file('gambar')->store('desserts', 'cloudinary');
+            $data['gambar'] = Storage::disk('cloudinary')->url($path);
+        }
+
+        Dessert::create($data);
+
+        return redirect()->route('admin.desserts.index')->with('success', 'Data Dessert berhasil ditambahkan.');
     }
 
     public function edit($id)
@@ -48,7 +73,7 @@ class DessertController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'gambar' => 'required',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'nama_dessert' => 'required|string|max:255',
             'komposisi' => 'required|string',
             'harga' => 'required|numeric',
@@ -56,9 +81,17 @@ class DessertController extends Controller
         ]);
 
         $dessert = Dessert::findOrFail($id);
-        $dessert->update($request->all());
+        $data = $request->except('gambar');
 
-        return redirect()->route('desserts.index')->with('success', 'Data Dessert berhasil diubah.');
+        // Cloudinary upload if new image via Storage
+        if ($request->hasFile('gambar')) {
+            $path = $request->file('gambar')->store('desserts', 'cloudinary');
+            $data['gambar'] = Storage::disk('cloudinary')->url($path);
+        }
+
+        $dessert->update($data);
+
+        return redirect()->route('admin.desserts.index')->with('success', 'Data Dessert berhasil diubah.');
     }
 
     public function destroy($id)
@@ -66,6 +99,6 @@ class DessertController extends Controller
         $dessert = Dessert::findOrFail($id);
         $dessert->delete();
 
-        return redirect()->route('desserts.index')->with('success', 'Data Dessert berhasil dihapus.');
+        return redirect()->route('admin.desserts.index')->with('success', 'Data Dessert berhasil dihapus.');
     }
 }
