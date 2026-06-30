@@ -10,7 +10,7 @@ class TransactionController extends Controller
 {
     public function index()
     {
-        $transactions = Transaction::with('dessert')->get();
+        $transactions = Transaction::with('dessert')->paginate(10);
         return view('transactions.index', compact('transactions'));
     }
 

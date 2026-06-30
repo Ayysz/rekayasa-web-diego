@@ -46,12 +46,19 @@
             </tbody>
         </table>
     </div>
+
+    <div class="mt-6">
+        {{ $users->links() }}
+    </div>
 </div>
 @endsection
 
 @stack('scripts')
 <script>
     $(document).ready(function() {
-        $('#userTable').DataTable();
+        $('#userTable').DataTable({
+            paging: false,
+            info: false
+        });
     });
 </script>

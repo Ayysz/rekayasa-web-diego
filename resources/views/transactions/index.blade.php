@@ -54,12 +54,19 @@
             </tbody>
         </table>
     </div>
+
+    <div class="mt-6">
+        {{ $transactions->links() }}
+    </div>
 </div>
 @endsection
 
 @stack('scripts')
 <script>
     $(document).ready(function() {
-        $('#transactionTable').DataTable();
+        $('#transactionTable').DataTable({
+            paging: false,
+            info: false
+        });
     });
 </script>

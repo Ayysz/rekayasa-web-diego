@@ -59,12 +59,19 @@
             </tbody>
         </table>
     </div>
+
+    <div class="mt-6">
+        {{ $desserts->links() }}
+    </div>
 </div>
 @endsection
 
 @stack('scripts')
 <script>
     $(document).ready(function() {
-        $('#dessertTable').DataTable();
+        $('#dessertTable').DataTable({
+            paging: false,
+            info: false
+        });
     });
 </script>

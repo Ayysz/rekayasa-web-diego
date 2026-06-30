@@ -10,7 +10,7 @@ class DessertController extends Controller
 {
     public function index()
     {
-        $desserts = Dessert::all();
+        $desserts = Dessert::paginate(10);
         return view('desserts.index', compact('desserts'));
     }
 
