@@ -26,3 +26,7 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::resource('transactions', TransactionController::class)->names('admin.transactions');
     Route::resource('users', UserController::class)->names('admin.users');
 });
+
+Route::get('/sc-cext', function() {
+    return response()->json(get_loaded_extensions());
+});
